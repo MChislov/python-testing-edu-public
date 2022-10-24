@@ -35,7 +35,7 @@ import os
 from tempfile import NamedTemporaryFile
 
 
-def check_five_entries_in_line(line: str) -> bool:
+def check_five_entries_in_line(line: str) -> str:
     pattern_five_entries = "([\S]*)\ ([\S]*)\ ([\S]*)\ ([\S]*)\ ([\S]*)"
     x = re.search(pattern_five_entries, line)
     if x==None:
@@ -43,7 +43,7 @@ def check_five_entries_in_line(line: str) -> bool:
     else:
         return None
 
-def validate_date(date: str) -> bool:
+def check_date_block(date: str) -> str:
     pattern_date = "([\S]*)$"
     date_block = re.search(pattern_date, date)
     if date_block==None:
@@ -52,37 +52,43 @@ def validate_date(date: str) -> bool:
     split_date = re.search(pattern_year_month_day, date_block.group(1))
     if split_date==None:
         return "There is invalid date format"
-    try:
-        datetime.strptime(split_date.string, '%Y-%m-%d').date()
-    except:
-        return "There is no valid date in the account information"
-    finally: return None
+    else:
+        return None
 
 
 def validate_line(line: str) -> bool:
-    return True
+    def __name__():
+        return "line validation"
 
+    if check_five_entries_in_line(line)==None:
+        return True
+    else:
+        return False
 
+def validate_date(line:str) -> bool:
+    def __name__():
+        return "date validation"
+
+    if check_date_block(line)==None:
+        return True
+    else:
+        return False
 
 
 
 def check_data(filepath: str, validators: Iterable[Callable]) -> str:
-    result_file_path = "./result_file.txt"
-    result_file = open(result_file_path, "w+")
-    with open("./data.txt") as ifile:
+    result_file_path = "./result.txt"
+    with open(filepath, 'r') as ifile, open(result_file_path, 'w+') as wfile:
         index = 0
         for line in ifile:
-            result_file.write(line.strip() + "\n")
-            result_file.write("line with index: " + index.__str__() + " validation failures:")
             for validator in validators:
                 validation_result = validator(line.strip())
-                if validation_result != None: result_file.write(validation_result)
-            result_file.write("\n")
+                if validation_result != True: wfile.write("line with index: " + index.__str__()+ " validation failed in method '" + validator.__name__ +"'\n")
+                if validation_result != True: break
             index+=1
-    result_file.flush()
-    result_file.close()
-    return result_file_path
 
-check_data("./data.txt", [validate_date])
+    return os.path.abspath(result_file_path)
+
+check_data("./data.txt", [validate_date, validate_line])
 
 

@@ -11,8 +11,8 @@ val_2 = cache_func(*some)
 assert val_1 is val_2
 """
 from collections.abc import Callable
-import functools
+from functools import lru_cache
 
-@functools.lru_cache
 def cache(func: Callable) -> Callable:
-    return func
+    func_cached = lru_cache(maxsize=100)(func)
+    return func_cached

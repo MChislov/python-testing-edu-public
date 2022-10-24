@@ -12,7 +12,4 @@ def test_cache():
     val_1 = cache_func(*some)
     val_2 = cache_func(*some)
 
-    print(id(val_1))
-    print(id(val_2))
-
     assert val_1 is val_2
