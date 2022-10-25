@@ -45,15 +45,15 @@ def test_oop(prepare_test_classes):
     assert result_1.author == first_student
     assert result_2.author == second_student
 
-    assert first_teacher.check_homework(result_1)
+    assert first_teacher.check_homework()
 
     hw_cache_length = len(Teacher.homework_done[first_hw])
 
-    assert second_teacher.check_homework(result_1)
+    assert second_teacher.check_homework()
     assert hw_cache_length == len(Teacher.homework_done[first_hw]) == 1
     assert result_1 in Teacher.homework_done[first_hw]
 
-    assert not second_teacher.check_homework(result_2)
+    assert not second_teacher.check_homework()
     assert result_2 not in Teacher.homework_done[second_hw]
 
     Teacher.reset_results()

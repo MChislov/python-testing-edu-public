@@ -23,20 +23,6 @@ Check file with tests to see how all these classes are used. You can create any 
 you want.
 """
 import datetime
-import time
-
-homework_done = {}
-
-class Teacher():
-    def __init__(self, name, surname):
-        self.name = name
-        self.surname = surname
-
-    def create_homework(name : str, deadline_shift : int):
-        return Homework(name, deadline_shift)
-
-    def check_homework(name):
-        pass
 
 class DeadlineError(Exception):
     def __init__(self, message='You are late'):
@@ -64,7 +50,36 @@ class Student():
 
     def do_homework(self, hw : Homework, solution : str):
         hw.is_deadline_passed()
-        if hw.name in homework_done.keys():
-            homework_done[hw.name].append({"author":self, "result":solution})
+        if hw in Teacher.homework_done.keys():
+            Teacher.homework_done[hw].append(Result(self, solution))
         else:
-            homework_done[hw.name] = [{"author":self, "result":solution}]
+            Teacher.homework_done[hw] = [Result(self, solution)]
+        return Teacher.homework_done[hw][-1]
+
+class Result:
+    def __init__(self, author: Student, solution: str):
+        self.author = author
+        self.solution = solution
+
+class Teacher:
+    homework_done = {}
+
+    def __init__(self, name, surname):
+        self.name = name
+        self.surname = surname
+
+    def create_homework(name: str, deadline_shift: int):
+        return Homework(name, deadline_shift)
+
+    def check_homework(self, result: Result):
+        print(type(result))
+        if len(result.solution)>5:
+            return True
+        else:
+            return None
+
+    def reset_results(*args):
+        if len(args) == 0:
+            Teacher.homework_done={}
+        else:
+            Teacher.homework_done.remove(args[0])
