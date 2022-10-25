@@ -44,31 +44,21 @@ def check_five_entries_in_line(line: str) -> str:
         return None
 
 def check_date_block(date: str) -> str:
-    pattern_date = "([\S]*)$"
+    pattern_date = "\ (\d{4})\-(\d{2})\-(\d{2})$|^(\d{4})\-(\d{2})\-(\d{2})$"
     date_block = re.search(pattern_date, date)
     if date_block==None:
-        return "There is no valid date block for analysis in the expected position"
-    pattern_year_month_day = "(\d{4})\-(\d{2})\-(\d{2})"
-    split_date = re.search(pattern_year_month_day, date_block.group(1))
-    if split_date==None:
         return "There is invalid date format"
     else:
         return None
 
 
 def validate_line(line: str) -> bool:
-    def __name__():
-        return "line validation"
-
     if check_five_entries_in_line(line)==None:
         return True
     else:
         return False
 
 def validate_date(line:str) -> bool:
-    def __name__():
-        return "date validation"
-
     if check_date_block(line)==None:
         return True
     else:
@@ -83,9 +73,8 @@ def check_data(filepath: str, validators: Iterable[Callable]) -> str:
         for line in ifile:
             for validator in validators:
                 validation_result = validator(line.strip())
-                if validation_result != True: wfile.write("line with index: " + index.__str__()+ " validation failed in method '" + validator.__name__ +"'\n")
-                if validation_result != True: break
-            index+=1
+                if not validation_result: wfile.write(line.strip()+ " " + validator.__name__ +"\n")
+                if not validation_result: break
 
     return os.path.abspath(result_file_path)
 
