@@ -72,7 +72,6 @@ class Teacher:
         return Homework(name, deadline_shift)
 
     def check_homework(self, result: Result):
-        print(type(result))
         if len(result.solution)>5:
             return True
         else:
