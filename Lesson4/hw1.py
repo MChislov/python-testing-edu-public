@@ -50,10 +50,11 @@ class Student():
 
     def do_homework(self, hw : Homework, solution : str):
         hw.is_deadline_passed()
-        return Teacher.send_homework_to_teacher(self, hw, solution)
+        return Result(hw, self, solution)
 
 class Result:
-    def __init__(self, author: Student, solution: str):
+    def __init__(self, hw: Homework, author: Student, solution: str):
+        self.hw = hw
         self.author = author
         self.solution = solution
 
@@ -64,19 +65,17 @@ class Teacher:
         self.name = name
         self.surname = surname
 
-    @classmethod
-    def send_homework_to_teacher(self, author: Student, hw: Homework, solution: str):
-        if hw in Teacher.homework_done.keys():
-            Teacher.homework_done[hw].append(Result(author, solution))
-        else:
-            Teacher.homework_done[hw] = [Result(author, solution)]
-        return Teacher.homework_done[hw][-1]
-
     def create_homework(name: str, deadline_shift: int):
         return Homework(name, deadline_shift)
 
     def check_homework(self, result: Result):
+        if result.hw in Teacher.homework_done.keys():
+            if result in Teacher.homework_done[result.hw]:
+                return True
+        else:
+            Teacher.homework_done[result.hw]=[]
         if len(result.solution)>5:
+            Teacher.homework_done[result.hw].append(result)
             return True
         else:
             return False
@@ -86,16 +85,3 @@ class Teacher:
             Teacher.homework_done={}
         else:
             Teacher.homework_done.remove(args[0])
-
-first_teacher = Teacher("Kay", "Alan")
-second_teacher = Teacher("Liskov", "Barbara")
-first_student = Student("Hopper", "Grace")
-second_student = Student("Turing", "Alan")
-first_hw = Teacher.create_homework("OOP homework", 1)
-second_hw = Teacher.create_homework("Read the documentation", 5)
-
-result_1 = first_student.do_homework(first_hw, "Homework 1 is done")
-result_2 = second_student.do_homework(second_hw, "done")
-
-print()
-print(type(result_1))
