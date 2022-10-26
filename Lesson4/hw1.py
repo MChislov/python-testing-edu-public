@@ -50,11 +50,7 @@ class Student():
 
     def do_homework(self, hw : Homework, solution : str):
         hw.is_deadline_passed()
-        if hw in Teacher.homework_done.keys():
-            Teacher.homework_done[hw].append(Result(self, solution))
-        else:
-            Teacher.homework_done[hw] = [Result(self, solution)]
-        return Teacher.homework_done[hw][-1]
+        return Teacher.send_homework_to_teacher(self, hw, solution)
 
 class Result:
     def __init__(self, author: Student, solution: str):
@@ -68,6 +64,14 @@ class Teacher:
         self.name = name
         self.surname = surname
 
+    @classmethod
+    def send_homework_to_teacher(self, author: Student, hw: Homework, solution: str):
+        if hw in Teacher.homework_done.keys():
+            Teacher.homework_done[hw].append(Result(author, solution))
+        else:
+            Teacher.homework_done[hw] = [Result(author, solution)]
+        return Teacher.homework_done[hw][-1]
+
     def create_homework(name: str, deadline_shift: int):
         return Homework(name, deadline_shift)
 
@@ -75,10 +79,23 @@ class Teacher:
         if len(result.solution)>5:
             return True
         else:
-            return None
+            return False
 
     def reset_results(*args):
         if len(args) == 0:
             Teacher.homework_done={}
         else:
             Teacher.homework_done.remove(args[0])
+
+first_teacher = Teacher("Kay", "Alan")
+second_teacher = Teacher("Liskov", "Barbara")
+first_student = Student("Hopper", "Grace")
+second_student = Student("Turing", "Alan")
+first_hw = Teacher.create_homework("OOP homework", 1)
+second_hw = Teacher.create_homework("Read the documentation", 5)
+
+result_1 = first_student.do_homework(first_hw, "Homework 1 is done")
+result_2 = second_student.do_homework(second_hw, "done")
+
+print()
+print(type(result_1))
