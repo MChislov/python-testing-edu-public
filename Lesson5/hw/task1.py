@@ -1,11 +1,12 @@
 import re
 
-class storage:
+
+class KeyValueStorage(dict):
     def __init__(self, path: str):
         self.file_path = path
-        self.data = {}
+        self.data = self.get_dict_data(self.path)
 
-    def KeyValueStorage(path):
+    def get_dict_data(self, path):
         pattern = "([a-zA-Z0-9_]*)\=([a-zA-Z0-9]*)"
         data = {}
         with open(path, 'r') as ifile:
@@ -15,7 +16,14 @@ class storage:
                     value = int(pair.group(2))
                 else:
                     value = pair.group(2)
-                data.update({pair.group(1):value})
+                data.update({pair.group(1): value})
         return data
 
+    return get_dict_data(path)
 
+
+storage = KeyValueStorage('.task1.txt').get_dict_data
+
+storage['name']
+storage.song_name
+storage.power
