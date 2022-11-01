@@ -38,15 +38,26 @@ c = 'zhaba'
 d = [[1, 2], [3, 4]]
 
 for _ in merge_elems(a, b, c, d):
-    print(_, end=' ')
+   print(_, end=' ')
 
 # output: 1 2 3 6 z h a b a 1 2 3 4
 
+print('\nNext task:')
 # 2. Implement a map-like function that returns an iterator (generator function)
 # extra functionality: if arg function can't be applied, return element as is + text exception
 
 def map_like(fun, *elems):
-    pass
+    def iterable(item):
+        isiterable = hasattr(item, '__iter__')
+        if isiterable:
+           return item
+        else:
+           return [str(item) + ': ' + str(type(item)) + ' object is not subscriptable']
+
+    for item in elems:
+        yield fun(iterable(item))
+
+
 
 # example input
 a = [1, 2, 3]
@@ -55,8 +66,8 @@ c = 'zhaba'
 d = True
 fun = lambda x: x[0]
 
-#for _ in map_like(fun, a, b, c, d):
-#    print(_)
+for _ in map_like(fun, a, b, c, d):
+   print(_)
 
 # output:
 # 1
