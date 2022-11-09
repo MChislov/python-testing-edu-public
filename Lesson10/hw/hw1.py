@@ -1,15 +1,18 @@
-
-#Vasya implemented nonoptimal Enum classes.
-#Remove duplications in variables declarations using metaclasses.
+# Vasya implemented nonoptimal Enum classes.
+# Remove duplications in variables declarations using metaclasses.
 
 from enum import Enum
 
+
 class SimplifiedEnum(type):
-    keys_dict_key = '_' + class_name + '__keys'
-    keys = attributes[keys_dict_key]
-    for key in keys:
-        setattr(None, key, key)
-    print(keys)
+    def __new__(mcs, class_name, args, attributes):
+        keys_dict_key = '_' + class_name + '__keys'
+        if keys_dict_key in attributes:
+            keys = attributes[keys_dict_key]
+            for key in keys:
+                attributes[key] = key
+        return type.__new__(mcs, class_name, args, attributes)
+
 
 class ColorsEnum(Enum):
     RED = "RED"
@@ -26,7 +29,7 @@ class SizesEnum(Enum):
     XS = "XS"
 
 
-#Should become:
+# Should become:
 
 class ColorsEnum(metaclass=SimplifiedEnum):
     __keys = ("RED", "BLUE", "ORANGE", "BLACK")
