@@ -38,21 +38,9 @@ def merge_elems(*elems):
             yield item
 
 def merge(*elems):
-    def submerge(item):
-        for sub_item in item:
-            if isinstance(sub_item, Iterable) and not isinstance(sub_item, (str, bytes)):
-                for sub_sub_item in submerge(sub_item):
-                    yield sub_sub_item
-            else:
-                if isinstance(sub_item, str):
-                    for char in sub_item:
-                        yield char
-                else:
-                    yield sub_item
-
     for elem in elems:
         if isinstance(elem, Iterable) and not isinstance(elem, (str, bytes)):
-            for sub_elem in submerge(elem):
+            for sub_elem in merge(*elem):
                 yield sub_elem
         else:
                 if isinstance(elem, str):
