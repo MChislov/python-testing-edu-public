@@ -33,7 +33,6 @@ class KeyValueStorage(dict):
 storage = KeyValueStorage('./task1.txt')
 
 
-
 print(storage['name'])
 print(storage.song_name)
 print(storage.power)

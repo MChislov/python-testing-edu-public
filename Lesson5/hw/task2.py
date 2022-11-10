@@ -59,6 +59,7 @@ print(len(tableDataItem))
 print(tableDataItem['Yeltsin'])
 
 presidents = TableData(database_name='example.sqlite', table_name='presidents')
+
 if ('Trump', 1337, 'US') in presidents:
     print('yes')
 else:
