@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 import xmltodict
 import re
@@ -29,7 +31,7 @@ def get_usr_rub():
 usd_rub = get_usr_rub()
 
 
-def get_companies_details_main_page(index):
+async def get_companies_details_main_page(index):
     text = get_page_html(root_url + '/index/components/s&p_500?p=' + str(index))
     tree = etree.HTML(text)
     r = tree.xpath('//div[@class= "table-responsive"]//tbody/tr/td/a')
@@ -38,7 +40,7 @@ def get_companies_details_main_page(index):
         companies.append({line.text: {"url": root_url + line.get("href"), "year": values.text}})
 
 
-def update_single_company_details(company_dict, url):
+async def update_single_company_details(company_dict, url):
     page = get_page_html(url)
     tree = etree.HTML(page)
     company_index_element = tree.xpath('//*[@class = \'price-section__category\']/span')
@@ -74,10 +76,23 @@ def extract_float_from_html_field(tree, xpath):
     return float(float_value[0])
 
 
+
 # get_companies_details_main_page(1)
 # print(companies)
-get_companies_details_main_page(1)
-for company in companies:
-    company_key = (list(company.keys()))[0]
-    print(company[company_key]['url'])
-    update_single_company_details(company[company_key], company[company_key]['url'])
+
+async def get_10_companies_details():
+    tasks = [asyncio.create_task(get_companies_details_main_page(item)) for item in range(1, 11)]
+    await asyncio.gather(*tasks)
+
+async def get_companies_details():
+    params = []
+    for company in companies:
+        company_key = (list(company.keys())[0])
+        params.append((company[company_key], company[company_key]['url']))
+    print(params)
+    tasks = [asyncio.create_task(update_single_company_details(param[0], param[1])) for param in params]
+    await asyncio.gather(*tasks)
+
+asyncio.run(get_10_companies_details())
+asyncio.run(get_companies_details())
+
