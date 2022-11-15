@@ -44,11 +44,15 @@ async def update_single_company_details(company_dict, url):
     page = get_page_html(url)
     tree = etree.HTML(page)
     company_index_element = tree.xpath('//*[@class = \'price-section__category\']/span')
-    company_index = company_index_element[0].text[-3:]
+    company_index = company_index_element[0].text[-4:]
+    company_index = re.findall('[A-Z]{1,4}', company_index)
     company_dict['index'] = company_index
     company_price_element = tree.xpath('//*[text()=\'Market Cap\']/..')
-    company_price = company_price_element[0].text
-    company_price = re.findall("([\\-\\d.]*)\\s([BM])", company_price)
+    try:
+        company_price = company_price_element[0].text
+        company_price = re.findall("([\\-\\d.]*)\\s([BM])", company_price)
+    except:
+        return
     if company_price[0][1] == 'B':
         multiplier = 1E9
     else:
@@ -89,10 +93,9 @@ async def get_companies_details():
     for company in companies:
         company_key = (list(company.keys())[0])
         params.append((company[company_key], company[company_key]['url']))
-    print(params)
     tasks = [asyncio.create_task(update_single_company_details(param[0], param[1])) for param in params]
     await asyncio.gather(*tasks)
 
 asyncio.run(get_10_companies_details())
+# print(companies.__len__())
 asyncio.run(get_companies_details())
-
