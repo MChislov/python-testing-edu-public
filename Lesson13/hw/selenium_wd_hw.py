@@ -9,4 +9,5 @@ add_password = driver.find_element(By.ID, "password").send_keys("secret_sauce")
 click_login_button = driver.find_element(By.XPATH, "//*[@type='submit']").click()
 assert "Epic sadface: Username and password do not match any user in this service" not in driver.page_source
 assert "Sauce Labs Backpack" in driver.page_source
+assert "https://www.saucedemo.com/inventory.html" in driver.current_url
 driver.close()
