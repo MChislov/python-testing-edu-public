@@ -1,5 +1,3 @@
-import requests
-
 test_url = "https://api.punkapi.com/v2/beers/8"
 
 def test_get_success():
