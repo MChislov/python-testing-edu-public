@@ -1,5 +1,6 @@
 *** Settings ***
 Library           SeleniumLibrary
+resource    KeywordResources/common.resource
 
 *** Variables ***
 ${base_url}       https://www.demoblaze.com

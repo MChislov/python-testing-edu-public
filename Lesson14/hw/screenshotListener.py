@@ -8,12 +8,12 @@ class screenshotListener(object):
         try:
             sl = BuiltIn().get_library_instance('SeleniumLibrary')
         except RuntimeError:
-            print "SeleniumLibrary is not in use"
+            print("SeleniumLibrary is not in use")
         if sl and 'screenshot' in attrs['tags']:
             driver = None
             try:
                 driver = sl._current_browser()
             except RuntimeError:
-                print "No browser open, skipping screenshot"
+                print("No browser open, skipping screenshot")
             if driver:
                 sl.capture_page_screenshot()
