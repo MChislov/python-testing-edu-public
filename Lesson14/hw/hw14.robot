@@ -1,11 +1,9 @@
 *** Settings ***
-Library           SeleniumLibrary
 resource    KeywordResources/common.resource
 
 *** Variables ***
 ${base_url}       https://www.demoblaze.com
-${registered_username}    mc1
-${registered_password}    mc1pass
+
 
 *** Test Cases ***
 TC_01
