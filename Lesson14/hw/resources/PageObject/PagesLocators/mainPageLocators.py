@@ -1,0 +1,2 @@
+# Locators
+ButtonLogin = 'login2'

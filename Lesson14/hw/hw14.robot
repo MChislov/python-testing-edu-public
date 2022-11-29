@@ -1,49 +1,31 @@
 *** Settings ***
-resource    KeywordResources/common.resource
+Resource          resources/common.resource
 
 *** Variables ***
-${base_url}       https://www.demoblaze.com
-
 
 *** Test Cases ***
 TC_01
+    [Setup]    Open Login Dialog    ${base_url}
     Login With Registered User
     SeleniumLibrary.Wait Until Page Contains Element    //*[text()='Log out']    timeout=1s
     [Teardown]    SeleniumLibrary.Close Browser
 
 TC_02
+    [Setup]    Open Login Dialog    ${base_url}
     Login With Registered User
-    Click Link    Monitors
-    Sleep    5s
-    ${max_price_item_index}    ${max_price}    ${product_title}    Get Max Price Item Index Price Name
+    Click Link Custom    Monitors
+    Sleep    3s
+    Wait Until First Product Card Is Visible    5s
+    ${max_price_item_index}    ${max_price}    ${product_title}    MaxPriceProductDetails.Get Max Price Card Details
     SeleniumLibrary.Click Element    //*[@class='card h-100']/../../div[${max_price_item_index}]
-    Click Link    Add to cart
-    SeleniumLibrary.Press Keys    None    RETURN
-    Click Link    Cart
-    SeleniumLibrary.Wait Until Element Is Visible    //*[text()='Place Order']    timeout=5s
-    SeleniumLibrary.Wait Until Element Is Visible    //*[@class='table-responsive']//tr[@class='success']/td[text()='${product_title}']    timeout=1s
-    SeleniumLibrary.Wait Until Element Is Visible    //*[@class='table-responsive']//tr[@class='success']/td[text()='${max_price}']    timeout=1s
+    Click Link Custom    Add to cart
+    Close Alert Dialog
+    Click Link Custom    Cart
+    Wait Until Cart Page Is Loaded    5s
+    Check Product Is In The Cart    ${product_title}    ${max_price}
     [Teardown]    SeleniumLibrary.Close Browser
 
 *** Keywords ***
-Login With Registered User
-    [Tags]    screenshot
-    SeleniumLibrary.Open Browser    ${base_url}    browser=chrome
-    SeleniumLibrary.Maximize Browser Window
-    SeleniumLibrary.Wait Until Element Is Visible    login2    timeout=5s
-    SeleniumLibrary.Click Element    login2
-    SeleniumLibrary.Wait Until Element Is Visible    loginusername    timeout=5s
-    SeleniumLibrary.Input Text    loginusername    ${registered_username}
-    SeleniumLibrary.Input Text    loginpassword    ${registered_password}
-    SeleniumLibrary.Click Button    //button[text()='Log in']
-    SeleniumLibrary.Wait Until Page Contains Element    //*[text()='Welcome ${registered_username}']    timeout=5s
-
-Click Link
-    [Arguments]    ${link_text}
-    [Tags]    screenshot
-    SeleniumLibrary.Wait Until Element Is Visible    //*[text()='${link_text}']    timeout=5s
-    SeleniumLibrary.Click Element    //*[text()='${link_text}']
-
 Get Max Price Item Index Price Name
     [Tags]    screenshot
     ${count}    SeleniumLibrary.Get Element Count    //div[@class='card h-100']//*[@class='card-block']/h5
