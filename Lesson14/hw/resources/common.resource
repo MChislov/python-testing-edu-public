@@ -3,7 +3,7 @@ Resource          PageObject/KeywordDefinitionFiles/loginPage.resource
 Resource          PageObject/KeywordDefinitionFiles/mainPage.resource
 Resource          PageObject/KeywordDefinitionFiles/monitorsPage.resource
 Resource          PageObject/KeywordDefinitionFiles/cartPageResource.resource
-Library           ../findMaxPriceProduct.py    WITH NAME    MaxPriceProductDetails
+Library           ../Libraries/findMaxPriceProduct.py    WITH NAME    MaxPriceProductDetails
 Library           String
 
 *** Variables ***
